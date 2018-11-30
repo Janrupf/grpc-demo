@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "kvbb.jannis.grpc";
+option java_outer_classname = "StoreProto";
+
+service Store {
+    rpc Login(LoginDetails) returns (LoginResponse) {}
+    rpc AddItem (AddItemRequest) returns (AddItemResponse) {}
+    rpc GetItem (GetItemRequest) returns (GetItemResponse) {}
+    rpc DeleteItem (DeleteItemRequest) returns (DeleteItemResponse) {}
+    rpc HasItem (HasItemRequest) returns (HasItemResponse) {}
+    rpc GetAvailableItems (AvailableItemsRequest) returns (AvailableItemsResponse) {}
+}
+
+message Session {
+    string sessionToken = 1;
+}
+
+message LoginDetails {
+    string name = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    Session session = 1;
+    ErrorDetails errorDetails = 2;
+}
+
+message Item {
+    string name = 1;
+    uint32 prize = 2;
+}
+
+message AddItemRequest {
+    Session session = 1;
+    Item item = 2;
+}
+
+message AddItemResponse {
+    ErrorDetails errorDetails = 1;
+}
+
+message GetItemRequest {
+    Session session = 1;
+    string itemName = 2;
+}
+
+message GetItemResponse {
+    Item item = 1;
+    ErrorDetails errorDetails = 2;
+}
+
+message DeleteItemRequest {
+    Session session = 1;
+    string itemName = 2;
+}
+
+message HasItemRequest {
+    Session session = 1;
+    string itemName = 2;
+}
+
+message HasItemResponse {
+    bool hasItem = 1;
+    ErrorDetails errorDetails = 2;
+}
+
+message DeleteItemResponse {
+    ErrorDetails errorDetails = 1;
+}
+
+message AvailableItemsRequest {
+    Session session = 1;
+}
+
+message AvailableItemsResponse {
+    repeated Item items = 1;
+    ErrorDetails errorDetails = 2;
+}
+
+message ErrorDetails {
+    string message = 1;
+    ErrorType type = 2;
+}
+
+enum ErrorType {
+    INVALID_CREDENTIALS = 0;
+    INVALID_SESSION_TOKEN = 1;
+    ITEM_EXISTS_ALREADY = 2;
+    ITEM_NOT_FOUND = 3;
+    OTHER = 100;
+}
